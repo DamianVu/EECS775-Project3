@@ -128,13 +128,38 @@ void createThemeRiver(Controller& c, ShaderIF* sIF, const char* csvFileName,
 		}
 	}
 
+
+	// Sorting the unique values to have an indication of order. Not sure if required to do this, but I did for clarity, since depending on which column you choose, it won't be sorted by that value.
 	std::sort(uniqueValues.begin(), uniqueValues.end());
 
 	int numDays = 365; // will be either 365 or 366
 	if (leapYear) numDays++;
 
-	int numCurrents = 0; // Actual number depends on which column was selected
-	float** currentWidths = nullptr;
+
+
+	int numCurrents = uniqueValues.size(); // Actual number depends on which column was selected
+
+	// Create current widths.
+	float** currentWidths = new float*[uniqueValues.size()];
+
+	for (int i = 0; i < uniqueValues.size(); i++) {
+		currentWidths[i] = new float[numDays](); // Parentheses initializes all to 0. I think.
+	}
+
+
+	// Populate current widths.
+	for (int i = 0; i < values.size(); i++) {
+		int valueIndex = -1;
+		int timeIndex = dates[i];
+
+		for (int j = 0; j < uniqueValues.size(); j++) {
+			if (values[i] == uniqueValues[j]) valueIndex = j;
+		}
+		currentWidths[valueIndex][timeIndex]++;
+	}
+
+
+
 	ThemeRiver* tr = new ThemeRiver(sIF, numDays, numCurrents, currentWidths);
 	c.addModel(tr);
 }

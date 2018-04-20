@@ -48,6 +48,8 @@ private:
 	GLuint vao[1];
 	GLuint vbo[1];
 
+	vec3* color;
+
 	void defineGeometry(float** currentWidths);
 };
 
